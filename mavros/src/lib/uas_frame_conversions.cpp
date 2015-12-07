@@ -21,7 +21,8 @@ using namespace mavros;
 // Eigen based functions
 
 //! +PI rotation around X (Roll) axis give us ROS or FCU representation
-static const Eigen::Quaterniond FRAME_ROTATE_Q = UAS::quaternion_from_rpy(M_PI, 0.0, 0.0);
+static const Eigen::Quaterniond FRAME_ROTATE_Q = UAS::quaternion_from_rpy(M_PI, M_PI_2, 0.0);
+
 
 //! Transform for vector3
 static const Eigen::Transform<double, 3, Eigen::Affine> FRAME_TRANSFORM_VECTOR3(FRAME_ROTATE_Q);
@@ -51,6 +52,44 @@ UAS::Covariance3d UAS::transform_frame(const Covariance3d &cov)
 }
 
 UAS::Covariance6d UAS::transform_frame(const Covariance6d &cov)
+{
+	Covariance6d cov_out_;
+	EigenMapConstCovariance6d cov_in(cov.data());
+	EigenMapCovariance6d cov_out(cov_out_.data());
+
+	//! @todo implement me!!!
+	ROS_ASSERT(false);
+	return cov_out_;
+}
+
+
+
+
+
+Eigen::Quaterniond UAS::transform_frame_back(const Eigen::Quaterniond &q)
+{
+	return FRAME_ROTATE_Q.inverse() * q * FRAME_ROTATE_Q;
+}
+
+Eigen::Vector3d UAS::transform_frame_back(const Eigen::Vector3d &vec)
+{
+	return FRAME_TRANSFORM_VECTOR3.inverse() * vec;
+}
+
+UAS::Covariance3d UAS::transform_frame_back(const Covariance3d &cov)
+{
+	Covariance3d cov_out_;
+	EigenMapConstCovariance3d cov_in(cov.data());
+	EigenMapCovariance3d cov_out(cov_out_.data());
+
+	// code from imu_transformer tf2_sensor_msgs.h
+	//cov_out = FRAME_ROTATE_Q * cov_in * FRAME_ROTATE_Q.inverse();
+	// from comments on github about tf2_sensor_msgs.h
+	cov_out = cov_in * FRAME_ROTATE_Q.inverse();
+	return cov_out_;
+}
+
+UAS::Covariance6d UAS::transform_frame_back(const Covariance6d &cov)
 {
 	Covariance6d cov_out_;
 	EigenMapConstCovariance6d cov_in(cov.data());

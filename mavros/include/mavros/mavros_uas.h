@@ -439,12 +439,41 @@ public:
 	// XXX TODO implement that function
 	static Covariance6d transform_frame(const Covariance6d &cov);
 
+	
+
+	/**
+	 * @brief Transform frame between ROS and FCU. (Vector3d)
+	 *
+	 * General function. Please use specialized enu-ned and ned-enu variants.
+	 */
+	static Eigen::Vector3d transform_frame_back(const Eigen::Vector3d &vec);
+
+	/**
+	 * @brief Transform frame between ROS and FCU. (Quaterniond)
+	 *
+	 * General function. Please use specialized enu-ned and ned-enu variants.
+	 */
+	static Eigen::Quaterniond transform_frame_back(const Eigen::Quaterniond &q);
+
+	/**
+	 * @brief Transform frame between ROS and FCU. (Covariance3d)
+	 *
+	 * General function. Please use specialized enu-ned and ned-enu variants.
+	 */
+	static Covariance3d transform_frame_back(const Covariance3d &cov);
+
+	// XXX TODO implement that function
+	static Covariance6d transform_frame_back(const Covariance6d &cov);
+
+
+
+
 	/**
 	 * @brief Transform from FCU to ROS frame.
 	 */
 	template<class T>
 	static inline T transform_frame_ned_enu(const T &in) {
-		return transform_frame(in);
+		return transform_frame_back(in);
 	}
 
 	/**
